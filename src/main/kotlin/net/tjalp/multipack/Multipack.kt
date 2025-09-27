@@ -20,7 +20,7 @@ class Multipack : JavaPlugin() {
         }
 
         this.lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS) { commands ->
-            commands.registrar().register(MultipackCommand.create(this, packService))
+            commands.registrar().register(MultipackCommand.create(this, packService), "Multipack-specific commands")
         }
 
         PlayerListener(packService).also { server.pluginManager.registerEvents(it, this) }

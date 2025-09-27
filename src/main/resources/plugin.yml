@@ -5,3 +5,7 @@ api-version: '1.21'
 authors: [ tjalp ]
 description: Allows you to set multiple resource packs for your Minecraft server, without merging them
 website: https://tjalp.net/
+permissions:
+  multipack.reload:
+    description: "Allows reloading the config"
+    default: op
