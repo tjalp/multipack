@@ -1,4 +1,4 @@
-name: multipack
+name: Multipack
 version: '1.0'
 main: net.tjalp.multipack.Multipack
 api-version: '1.21'

@@ -7,9 +7,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.future.await
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.identity.Identity
-import net.kyori.adventure.pointer.Pointer
-import net.kyori.adventure.pointer.Pointered
-import net.kyori.adventure.pointer.Pointers
 import net.kyori.adventure.resource.ResourcePackCallback.onTerminal
 import net.kyori.adventure.resource.ResourcePackInfo
 import net.kyori.adventure.resource.ResourcePackRequest
@@ -25,13 +22,14 @@ class PackService(
 
     /**
      * Load the packs from the config.
+     *
+     * @param config The configuration to load the packs from.
      */
     suspend fun load(config: FileConfiguration) {
         val packUrls = config.getStringList("pack_urls").reversed()
 
         if (packUrls.isEmpty()) {
             plugin.logger.warning("No pack URLs found in config, please add some to use Multipack.")
-            return
         }
 
         val packs = coroutineScope {
@@ -56,8 +54,8 @@ class PackService(
 
                     packInfo
                 }
-            }.awaitAll()
-        }.filterNotNull()
+            }.awaitAll().filterNotNull()
+        }
 
         request = ResourcePackRequest.resourcePackRequest()
             .packs(packs)
@@ -71,6 +69,7 @@ class PackService(
      * Send the packs to the given audience.
      *
      * @param audience The audience to send the packs to.
+     * @param await Whether to wait for the audience to load the packs before returning. Defaults to true.
      */
     suspend fun send(audience: Audience, await: Boolean = true) {
         val audienceRequest = request
@@ -82,6 +81,13 @@ class PackService(
 
         var loadedPackCount = 0
         val requiredPackCount = audienceRequest.asResourcePackRequest().packs().size
+
+        if (requiredPackCount <= 0) {
+            plugin.logger.info("No resource packs to send to ${audience.get(Identity.NAME)}, clearing any existing packs...")
+            audience.clearResourcePacks()
+            return
+        }
+
         val deferred = CompletableDeferred<Boolean>()
 
         audienceRequest.callback(

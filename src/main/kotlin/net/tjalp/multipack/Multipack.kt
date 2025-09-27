@@ -1,6 +1,9 @@
 package net.tjalp.multipack
 
+import io.papermc.paper.command.brigadier.Commands
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import kotlinx.coroutines.runBlocking
+import net.tjalp.multipack.command.MultipackCommand
 import net.tjalp.multipack.listener.PlayerListener
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -15,6 +18,10 @@ class Multipack : JavaPlugin() {
 
         runBlocking {
             packService.load(config)
+        }
+
+        this.lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS) { commands ->
+            commands.registrar().register(MultipackCommand.create(this, packService))
         }
 
         PlayerListener(packService).also { server.pluginManager.registerEvents(it, this) }
