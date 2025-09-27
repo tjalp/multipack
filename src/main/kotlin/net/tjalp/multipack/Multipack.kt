@@ -1,6 +1,5 @@
 package net.tjalp.multipack
 
-import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import kotlinx.coroutines.runBlocking
 import net.tjalp.multipack.command.MultipackCommand
