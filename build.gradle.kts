@@ -22,6 +22,7 @@ dependencies {
 
 tasks {
     shadowJar {
+        archiveClassifier.set("") // Replace the original jar
         manifest {
             attributes["paperweight-mappings-namespace"] = "mojang"
         }
