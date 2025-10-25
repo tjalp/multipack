@@ -1,12 +1,14 @@
 package net.tjalp.multipack.listener
 
 import io.papermc.paper.event.connection.configuration.AsyncPlayerConnectionConfigureEvent
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor.RED
 import net.tjalp.multipack.PackService
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import kotlin.time.Duration.Companion.minutes
@@ -21,12 +23,14 @@ class PlayerListener(
         val audience = event.connection.audience
 
         runBlocking {
-            withTimeout(5.minutes) {
-                try {
+            try {
+                withTimeout(5.minutes) {
                     packService.send(audience)
-                } catch (e: CancellationException) {
-                    event.connection.disconnect(text("Timed out while trying to load resource packs. Please try again.", RED))
                 }
+            } catch (e: TimeoutCancellationException) {
+                Bukkit.getServer().logger.warning("Timed out while trying to load resource packs for player ${event.connection.audience.get(
+                    Identity.NAME)}")
+                event.connection.disconnect(text("Timed out while trying to load resource packs. Please try again.", RED))
             }
         }
     }

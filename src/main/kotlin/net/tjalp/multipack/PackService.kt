@@ -66,7 +66,7 @@ class PackService(
     }
 
     /**
-     * Send the packs to the given audience.
+     * Send the packs to the given audience and waits until done sending.
      *
      * @param audience The audience to send the packs to.
      * @param await Whether to wait for the audience to load the packs before returning. Defaults to true.
