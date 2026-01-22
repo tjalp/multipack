@@ -49,7 +49,7 @@ class PackService(
                     }
 
                     if (packInfo != null) {
-                        plugin.logger.info("Successfully loaded resource pack from URL: '$url'")
+                        plugin.logger.info("Successfully loaded resource pack (id: ${packInfo.id()}, hash: ${packInfo.hash()}) from URL: $url")
                     }
 
                     packInfo
